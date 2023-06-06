@@ -1,20 +1,58 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react';
+import { NavigationContainer, StackActions } from '@react-navigation/native';
+import HomeScreen from './screens/HomeScreen';
+import ImageScreen from './screens/ImageScreen';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { Image, Text, StyleSheet } from 'react-native';
+import pexelsLogo from './assets/Pexels.png';
+
+const stack = createNativeStackNavigator()
 
 export default function App() {
+
+  const [openSearch, setOpenSearch] = useState(false)
+
   return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
+    <NavigationContainer>
+      <stack.Navigator>
+        <stack.Screen name='HomeScreen' 
+          options={{
+            headerLeft: () => <Image source={pexelsLogo} style={styles.logo} />,
+            headerRight: () => (
+              <Text
+                style={{ color: 'white', fontSize: 18 }}
+                onPress={() => setOpenSearch(!openSearch)}
+              >
+                {openSearch ? "Close" : "Search"}</Text>
+            ),
+            title: "Pexels App",
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+              fontWeight: "bold",
+            },
+            headerStyle: {
+              backgroundColor: '#0D0D0D'
+            },
+            
+          }}
+          >
+          {(props) => <HomeScreen {...props} openSearch={openSearch}/>}
+          
+        </stack.Screen>
+        <stack.Screen name='ImageScreen' component={ImageScreen} />
+      </stack.Navigator>
+      <StatusBar />
+    </NavigationContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  logo: {
+    width: 37,
+    height: 37,
+    marginEnd: 5,
+    borderRadius: 5,
+  }
+
+})
